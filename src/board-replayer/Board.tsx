@@ -28,12 +28,14 @@ function Board({board}:BoardProps) {
 
   const fileCoords = [1,2,3,4,5,6,7,8,9]
   const rankCoords = ['a','b','c','d','e','f','g','h','i']
+
+  const baseUrl = 'gungi-replay'
 	return (
 		<div className='grid grid-cols-9 gap-0.5 bg-amber-500 p-0.5 relative'>
       {boardUI.map((square) => {
         return <div className='w-20 h-20 bg-orange-200'>
           {/* <img src="src/assets/pieces/b1中.svg" alt="piece" className='p-1.5' /> */}
-          {tierToString(square) ? <img src={`/pieces/${tierToString(square)}.svg`} alt="piece" className='p-1.5' /> : null}
+          {tierToString(square) ? <img src={`${baseUrl}/pieces/${tierToString(square)}.svg`} alt="piece" className='p-1.5' /> : null}
         </div>
       })}
       <div className="grid grid-flow-row-dense absolute h-full -ml-4 items-center">
