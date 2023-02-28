@@ -51,6 +51,7 @@ function HistoryInput(props) {
 		if (split == null) {
 			console.log('nulled: ', split);
 			props.setBoard(createNewBoard())
+			props.setTurnNumber(0)
 			props.setTurnList([]);
 		} else if (
 			split.every((turn) => {
@@ -59,6 +60,7 @@ function HistoryInput(props) {
 		) {
 			console.log('yep');
 			props.setBoard(createNewBoard())
+			props.setTurnNumber(0)
 			props.setTurnList(split);
 		} else {
 			console.log(split);
