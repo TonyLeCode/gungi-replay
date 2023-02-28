@@ -9,13 +9,13 @@ interface Stack {
 	tier3: null | Piece;
 }
 
-interface Square {
+export interface Square {
 	stack: Stack;
 }
 
-interface Move {
+export interface Move {
 	type: moveType;
-	color: Color;
+	color?: Color;
 	from?: string;
 	fromPiece: string;
 	to: string;
@@ -41,9 +41,9 @@ function createNewBoard() {
 	return board;
 }
 
-type moveType = 'place' | 'move' | 'attack' | 'stack' | 'ready';
+export type moveType = 'place' | 'move' | 'attack' | 'stack' | 'ready';
 
-function parse(moveType: moveType, movement: string) {
+function parse(moveType: moveType, movement: string):Move|null {
 	switch (moveType) {
 		case 'place': {
 			// const regexp = /(?<=stockpile\s)./;
@@ -232,10 +232,10 @@ function unmakeMove(board: Square[][], move: Move, color: Color){
 		const coordsFrom = [coordToArrayIndex(Number(move.from[0])), coordToArrayIndex(move.from[1])]
 		if(coordsTo[0] == null || coordsTo[1] == null){return null}
 		if(coordsFrom[0] == null || coordsFrom[1] == null){return null}
-
+		
 		const square1 = produce(board[coordsTo[0]][coordsTo[1]], (draft) => {
 			removeTopPiece(draft)
-			placeTopPiece(draft, reverseColor(color), move.toPiece)
+			placeTopPiece(draft, reverseColor(color), move.toPiece!)
 		})
 		const square2 = produce(board[coordsFrom[0]][coordsFrom[1]], (draft) => {
 			placeTopPiece(draft, color, move.fromPiece)

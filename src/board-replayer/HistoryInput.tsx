@@ -1,14 +1,21 @@
 import { useState } from 'react';
-import { createNewBoard } from '../helpers/board';
+import { Square, createNewBoard, moveType } from '../helpers/board';
+import { Updater } from 'use-immer';
 
-interface Turn {
+export interface Turn {
 	color: 'b' | 'w';
 	moveNum: number;
-	moveType: string | null;
+	moveType: moveType | null;
 	movement: string | null;
 }
 
-function HistoryInput(props) {
+interface HistoryInputProps {
+	setBoard: Updater<Square[][]>;
+	setTurnNumber:React.Dispatch<React.SetStateAction<number>>;
+	setTurnList:React.Dispatch<React.SetStateAction<Turn[]>>;
+}
+
+function HistoryInput({setBoard, setTurnNumber, setTurnList}:HistoryInputProps) {
 	const [value, setValue] = useState('');
 
 	function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -30,38 +37,45 @@ function HistoryInput(props) {
 
 			const regexp2 = /.+(?=\()/;
 
+			const match2 = match[3].match(regexp2)
+
+			if (match2 == null){return}
+
 			if (match[3].includes('place')) {
 				obj.moveType = 'place';
-				obj.movement = match[3].match(regexp2)[0].trim();
+				obj.movement = match2[0].trim();
 			} else if (match[3].includes('ready')) {
 				obj.moveType = 'ready';
 			} else if (match[3].includes('stack')) {
 				obj.moveType = 'stack';
-				obj.movement = match[3].match(regexp2)[0].trim();
+				obj.movement = match2[0].trim();
 			} else if (match[3].includes('move')) {
 				obj.moveType = 'move';
-				obj.movement = match[3].match(regexp2)[0].trim();
+				obj.movement = match2[0].trim();
 			} else if (match[3].includes('attack')) {
 				obj.moveType = 'attack';
-				obj.movement = match[3].match(regexp2)[0].trim();
+				obj.movement = match2[0].trim();
 			}
 			// console.log(match)
 			return obj;
 		});
 		if (split == null) {
 			// console.log('nulled: ', split);
-			props.setBoard(createNewBoard())
-			props.setTurnNumber(0)
-			props.setTurnList([]);
+			setBoard(createNewBoard())
+			setTurnNumber(0)
+			setTurnList([]);
 		} else if (
 			split.every((turn) => {
 				return turn != null && turn.moveNum != null && turn.color != null && turn.moveType != null;
 			})
 		) {
 			// console.log('yep');
-			props.setBoard(createNewBoard())
-			props.setTurnNumber(0)
-			props.setTurnList(split);
+			setBoard(createNewBoard())
+			setTurnNumber(0)
+			const filtered = split.filter((turn) => {
+				return turn != null && turn != undefined}
+				) as Turn[]
+			setTurnList(filtered!);
 		} else {
 			// console.log(split);
 			// console.log('nup');

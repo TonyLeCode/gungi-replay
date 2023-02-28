@@ -1,10 +1,20 @@
 import { useEffect, useRef } from 'react';
+import { Turn } from './HistoryInput';
 
-function History({turnNumber, setTurnNumber, turnList, prev, next}) {
-	const ref = useRef(null);
+interface HistoryProps {
+	turnNumber: number;
+	setTurnNumber: React.Dispatch<React.SetStateAction<number>>;
+	turnList: Turn[];
+	prev: () => void;
+	next: () => void;
+}
+
+function History({turnNumber, setTurnNumber, turnList, prev, next}:HistoryProps) {
+	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (ref) {
+			if(ref.current == null){return}
 			ref.current.scrollTop = (turnNumber - 1) * 32;
 		}
 	}, [turnNumber]);

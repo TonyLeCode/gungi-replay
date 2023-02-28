@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { getTopPiece, reverseList } from "../helpers/board";
+import { Square, getTopPiece, reverseList } from "../helpers/board";
 
-function Board(props) {
-  const boardUI = []
-  props.board.forEach((row) => {
+interface BoardProps {
+  board: Square[][];
+}
+
+function Board({board}:BoardProps) {
+  const boardUI:Square[] = []
+  board.forEach((row) => {
     row.forEach((col) => {
       boardUI.push(col)
     })
   })
 
-  function tierToString(square){
+  function tierToString(square: Square){
     const topPiece = getTopPiece(square);
     if (topPiece === 'tier3') {
       return square.stack.tier3;
