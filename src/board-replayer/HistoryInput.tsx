@@ -38,13 +38,16 @@ function HistoryInput({setBoard, setTurnNumber, setTurnList}:HistoryInputProps) 
 			const regexp2 = /.+(?=\()/;
 
 			const match2 = match[3].match(regexp2)
-
-			if (match2 == null){return}
+			if (match2 == null){
+				obj.moveType = 'ready'
+				return obj
+			}
 
 			if (match[3].includes('place')) {
 				obj.moveType = 'place';
 				obj.movement = match2[0].trim();
 			} else if (match[3].includes('ready')) {
+				console.log('ready')
 				obj.moveType = 'ready';
 			} else if (match[3].includes('stack')) {
 				obj.moveType = 'stack';
