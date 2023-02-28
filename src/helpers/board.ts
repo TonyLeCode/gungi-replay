@@ -51,7 +51,7 @@ function parse(moveType: moveType, movement: string) {
 			const match = movement.match(regexp);
 			// console.log('place');
 			if (match) {
-				console.log(match);
+				// console.log(match);
 				return { type: 'place', fromPiece: `${match[1]}`, to: `${match[2]}${match[3]}` };
 			}
 			return null;
@@ -61,7 +61,7 @@ function parse(moveType: moveType, movement: string) {
 			const match = movement.match(regexp);
 			// console.log('move');
 			if (match) {
-				console.log(match);
+				// console.log(match);
 				return { type: 'move', from: `${match[0]}${match[1]}`, fromPiece: `${match[3]}`, to: `${match[4]}${match[5]}` };
 			}
 			return null;

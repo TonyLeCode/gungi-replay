@@ -36,7 +36,7 @@ function BoardReplayer() {
 	function prev() {
 		if (turnNumber > 0) {
 			const move = parse(turnList[turnNumber - 1].moveType, turnList[turnNumber - 1].movement);
-			console.log('move', move)
+			// console.log('move', move)
 			const newMoves = unmakeMove(board, move, turnList[turnNumber - 1].color);
 			if (newMoves != null) {
 				setBoard((draft) => {
@@ -71,7 +71,7 @@ function BoardReplayer() {
 		<main className='flex flex-col items-center'>
 			<div className='flex justify-center mt-12 mb-12 gap-4'>
 				<Board board={board} />
-				<History turnList={turnList} turnNumber={turnNumber} setTurnNumber={setTurnNumber} />
+				<History turnList={turnList} turnNumber={turnNumber} setTurnNumber={setTurnNumber} prev={prev} next={next} />
 			</div>
 			<div className='flex items-center mb-12 gap-8'>
 				<Pagination prev={prev} next={next} currentValue={turnNumber} finalValue={turnList.length} />

@@ -49,7 +49,7 @@ function HistoryInput(props) {
 			return obj;
 		});
 		if (split == null) {
-			console.log('nulled: ', split);
+			// console.log('nulled: ', split);
 			props.setBoard(createNewBoard())
 			props.setTurnNumber(0)
 			props.setTurnList([]);
@@ -58,13 +58,13 @@ function HistoryInput(props) {
 				return turn != null && turn.moveNum != null && turn.color != null && turn.moveType != null;
 			})
 		) {
-			console.log('yep');
+			// console.log('yep');
 			props.setBoard(createNewBoard())
 			props.setTurnNumber(0)
 			props.setTurnList(split);
 		} else {
-			console.log(split);
-			console.log('nup');
+			// console.log(split);
+			// console.log('nup');
 		}
 	}
 
