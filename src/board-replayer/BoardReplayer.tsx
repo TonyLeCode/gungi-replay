@@ -20,11 +20,13 @@ function BoardReplayer() {
 			});
 			const move = parse(turnList[turnNumber].moveType, turnList[turnNumber].movement )
 			// console.log(move)
-			const newMove = makeMove(board, move, turnList[turnNumber].color)
+			const newMoves = makeMove(board, move, turnList[turnNumber].color)
 			// console.log('new move', newMove)
-			if (newMove != null){
+			if (newMoves != null){
 				setBoard((draft) => {
-					draft[newMove.coords[0]][newMove.coords[1]] = newMove.newSquare
+					newMoves.forEach((newMove) => {
+						draft[newMove.coords[0]][newMove.coords[1]] = newMove.newSquare
+					})
 				})
 			}
 		}

@@ -107,6 +107,32 @@ function parse(moveType: moveType, movement: string) {
 	}
 }
 
+function placeTopPiece(square:Square, color:Color, piece:string){
+	const topPiece = getTopPiece(square)
+	if (topPiece === null) {
+		square.stack.tier1 = `${color}1${piece}`;
+	} else if (topPiece === 'tier1') {
+		square.stack.tier2 = `${color}2${piece}`;
+	} else if (topPiece === 'tier2') {
+		square.stack.tier3 = `${color}3${piece}`;
+	} else {
+		console.log('stack error');
+	}
+}
+
+function removeTopPiece(square:Square){
+	const topPiece = getTopPiece(square)
+	if (topPiece === 'tier3') {
+		square.stack.tier3 = null;
+	} else if (topPiece === 'tier2') {
+		square.stack.tier2 = null;
+	} else if (topPiece === 'tier1') {
+		square.stack.tier1 = null;
+	} else {
+		console.log('stack error');
+	}
+}
+
 function makeMove(board: Square[][], move: Move, color: Color) {
 	// console.log(move)
 	// console.log(move.type)
@@ -116,35 +142,48 @@ function makeMove(board: Square[][], move: Move, color: Color) {
 	if (move.type === 'place') {
 		// console.log('placing')
 		const coords = [coordToArrayIndex(Number(move.to[0])), coordToArrayIndex(move.to[1])];
-    const square = produce(board[coords[0]][coords[1]], (draft) => {
+		if(coords[0] == null || coords[1] == null){return}
 
-      const topPiece = getTopPiece(board[coords[0]][coords[1]]);
-      if (topPiece === null) {
-        draft.stack.tier1 = `${color}1${move.fromPiece}`;
-      } else if (topPiece === 'tier1') {
-        draft.stack.tier2 = `${color}2${move.fromPiece}`;
-      } else if (topPiece === 'tier2') {
-        draft.stack.tier3 = `${color}3${move.fromPiece}`;
-      } else {
-        console.log('stack error');
-      }
+    const square = produce(board[coords[0]][coords[1]], (draft) => {
+			placeTopPiece(draft, color, move.fromPiece)
     })
-		return { coords: coords, newSquare: square };
+		return [{ coords: coords, newSquare: square }];
     // return null
+	} else if(move.type === 'move' || move.type === 'stack'){
+		if(move.from == undefined){return null}
+		const coordsTo = [coordToArrayIndex(Number(move.to[0])), coordToArrayIndex(move.to[1])]
+		const coordsFrom = [coordToArrayIndex(Number(move.from[0])), coordToArrayIndex(move.from[1])]
+		if(coordsTo[0] == null || coordsTo[1] == null){return null}
+		if(coordsFrom[0] == null || coordsFrom[1] == null){return null}
+
+		const square1 = produce(board[coordsTo[0]][coordsTo[1]], (draft) => {
+			placeTopPiece(draft, color, move.fromPiece)
+		})
+		const square2 = produce(board[coordsFrom[0]][coordsFrom[1]], (draft) => {
+			removeTopPiece(draft)
+		})
+
+		return [{coords: coordsTo, newSquare: square1},{coords: coordsFrom, newSquare: square2}]
+	} else if(move.type === 'ready'){
+		return null
+	} else if(move.type === 'attack'){
+		if(move.from == undefined){return null}
+		const coordsTo = [coordToArrayIndex(Number(move.to[0])), coordToArrayIndex(move.to[1])]
+		const coordsFrom = [coordToArrayIndex(Number(move.from[0])), coordToArrayIndex(move.from[1])]
+		if(coordsTo[0] == null || coordsTo[1] == null){return null}
+		if(coordsFrom[0] == null || coordsFrom[1] == null){return null}
+
+		const square1 = produce(board[coordsTo[0]][coordsTo[1]], (draft) => {
+			removeTopPiece(draft)
+			placeTopPiece(draft, color, move.fromPiece)
+		})
+		const square2 = produce(board[coordsFrom[0]][coordsFrom[1]], (draft) => {
+			removeTopPiece(draft)
+		})
+
+		return [{coords: coordsTo, newSquare: square1},{coords: coordsFrom, newSquare: square2}]
 	}
-	// attack
-	// remove piece from origin square
-	// remove attacked piece
-	// add moved piece
-	// stack
-	// remove piece from origin
-	// add moved piece
-	// move
-	// remove piece from origin
-	// add moved piece
-	// place
-	// *remove from stockpile
-	// add piece
+	
 	return null;
 }
 
