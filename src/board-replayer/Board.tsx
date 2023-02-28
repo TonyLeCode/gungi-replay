@@ -33,7 +33,7 @@ function Board({board}:BoardProps) {
       {boardUI.map((square) => {
         return <div className='w-20 h-20 bg-orange-200'>
           {/* <img src="src/assets/pieces/b1中.svg" alt="piece" className='p-1.5' /> */}
-          {tierToString(square) ? <img src={`src/assets/pieces/${tierToString(square)}.svg`} alt="piece" className='p-1.5' /> : null}
+          {tierToString(square) ? <img src={`/pieces/${tierToString(square)}.svg`} alt="piece" className='p-1.5' /> : null}
         </div>
       })}
       <div className="grid grid-flow-row-dense absolute h-full -ml-4 items-center">
