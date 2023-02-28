@@ -41,6 +41,9 @@ function BoardReplayer() {
 	}
 	function prev() {
 		if (turnNumber > 0) {
+			setTurnNumber((state) => {
+				return state - 1;
+			});
 			const moveType = turnList[turnNumber - 1].moveType
 			const movement = turnList[turnNumber - 1].movement
 			if(moveType == null){return}
@@ -57,9 +60,6 @@ function BoardReplayer() {
 					});
 				});
 			}
-			setTurnNumber((state) => {
-				return state - 1;
-			});
 		}
 	}
 
