@@ -71,13 +71,12 @@ function parse(moveType: moveType, movement: string) {
 			const match = movement.match(regexp);
 			// console.log('attack');
 			if (match) {
-				// console.log(match);
 				return {
 					type: 'attack',
 					from: `${match[0]}${match[1]}`,
 					fromPiece: `${match[3]}`,
 					to: `${match[4]}${match[5]}`,
-					toPiece: `${match[7]}${match[8]}`,
+					toPiece: `${match[8]}`,
 				};
 			}
 			return null;
@@ -105,6 +104,15 @@ function parse(moveType: moveType, movement: string) {
 			console.log('error');
 			return null;
 	}
+}
+
+function reverseColor(color:Color): Color {
+	if(color === 'b'){
+		return 'w'
+	} else if(color === 'w'){
+		return 'b'
+	}
+	return null
 }
 
 function placeTopPiece(square:Square, color:Color, piece:string){
@@ -184,6 +192,58 @@ function makeMove(board: Square[][], move: Move, color: Color) {
 		return [{coords: coordsTo, newSquare: square1},{coords: coordsFrom, newSquare: square2}]
 	}
 	
+	return null;
+}
+
+function unmakeMove(board: Square[][], move: Move, color: Color){
+	if (move == null) {
+		return null;
+	}
+	if (move.type === 'place') {
+		// console.log('placing')
+		const coords = [coordToArrayIndex(Number(move.to[0])), coordToArrayIndex(move.to[1])];
+		if(coords[0] == null || coords[1] == null){return}
+
+    const square = produce(board[coords[0]][coords[1]], (draft) => {
+			removeTopPiece(draft)
+    })
+		return [{ coords: coords, newSquare: square }];
+    // return null
+	} else if(move.type === 'move' || move.type === 'stack'){
+		if(move.from == undefined){return null}
+		const coordsTo = [coordToArrayIndex(Number(move.to[0])), coordToArrayIndex(move.to[1])]
+		const coordsFrom = [coordToArrayIndex(Number(move.from[0])), coordToArrayIndex(move.from[1])]
+		if(coordsTo[0] == null || coordsTo[1] == null){return null}
+		if(coordsFrom[0] == null || coordsFrom[1] == null){return null}
+
+		const square1 = produce(board[coordsTo[0]][coordsTo[1]], (draft) => {
+			removeTopPiece(draft)
+		})
+		const square2 = produce(board[coordsFrom[0]][coordsFrom[1]], (draft) => {
+			placeTopPiece(draft, color, move.fromPiece)
+		})
+
+		return [{coords: coordsTo, newSquare: square1},{coords: coordsFrom, newSquare: square2}]
+	} else if(move.type === 'ready'){
+		return null
+	} else if(move.type === 'attack'){
+		if(move.from == undefined){return null}
+		const coordsTo = [coordToArrayIndex(Number(move.to[0])), coordToArrayIndex(move.to[1])]
+		const coordsFrom = [coordToArrayIndex(Number(move.from[0])), coordToArrayIndex(move.from[1])]
+		if(coordsTo[0] == null || coordsTo[1] == null){return null}
+		if(coordsFrom[0] == null || coordsFrom[1] == null){return null}
+
+		const square1 = produce(board[coordsTo[0]][coordsTo[1]], (draft) => {
+			removeTopPiece(draft)
+			placeTopPiece(draft, reverseColor(color), move.toPiece)
+		})
+		const square2 = produce(board[coordsFrom[0]][coordsFrom[1]], (draft) => {
+			placeTopPiece(draft, color, move.fromPiece)
+		})
+
+		return [{coords: coordsTo, newSquare: square1},{coords: coordsFrom, newSquare: square2}]
+	}
+
 	return null;
 }
 
@@ -267,4 +327,4 @@ function coordToArrayIndex(coord: number | string): number | null {
 	return null;
 }
 
-export { createNewBoard, parse, letterToNum, numToLetter, makeMove, reverseList, coordToArrayIndex, getTopPiece };
+export { createNewBoard, parse, letterToNum, numToLetter, makeMove, unmakeMove, reverseList, coordToArrayIndex, getTopPiece };
