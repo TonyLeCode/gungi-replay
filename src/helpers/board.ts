@@ -47,7 +47,7 @@ function parse(moveType: moveType, movement: string):Move|null {
 	switch (moveType) {
 		case 'place': {
 			// const regexp = /(?<=stockpile\s)./;
-			const regexp = /(?<=stockpile\s)(.)[\s→]+(\d)-(\w)-(\d)/;
+			const regexp = /stockpile\s(.)[\s→]+(\d)-(\w)-(\d)/;
 			const match = movement.match(regexp);
 			// console.log('place');
 			if (match) {
